@@ -9,11 +9,16 @@ d3.json(url).then(function (data) {
     createFeatures(data.features);
   });
   
-  function createFeatures(earthquakeData) {
+    function createFeatures(earthquakeData) {
+        // Define a function that we want to run once for each feature in the features array.
+        // Give each feature a popup that describes the place and time of the earthquake.
+        function onEachFeature(feature, layer) {
+            layer.bindPopup(`<h3>${feature.properties.place}</h3><hr>
+            <p>${new Date(feature.properties.time)}</p>`);
+        }
 
     // Define arrays to hold the created earthquake markers.
     let earthquakeMarkers = [];
-    console.log(earthquakeData[0].properties.mag)
 
     // Loop through locations, and create the city and state markers.
     for (let i = 0; i < earthquakeData.length; i++) {
@@ -21,6 +26,7 @@ d3.json(url).then(function (data) {
         // Establish coordinate for earthquake
         let latitude = earthquakeData[i].geometry.coordinates[1]
         let longitude = earthquakeData[i].geometry.coordinates[0]
+        let depth = earthquakeData[i].geometry.coordinates[2]
         let coordinates = [latitude, longitude]
         // Setting the marker radius for the state by magnitude
         earthquakeMarkers.push(
@@ -29,16 +35,15 @@ d3.json(url).then(function (data) {
                 fillOpacity: 0.75,
                 color: "green",
                 fillColor: "green",
-                radius: earthquakeData[i].properties.mag * 50000
-            })
+                radius: earthquakeData[i].properties.mag * 50000,
+            }).bindPopup(`<h3>${earthquakeData[i].properties.place}</h3>
+                <hr><p>Magnitude: ${(earthquakeData[i].properties.mag)}</p>
+                <p>Depth: ${(depth)} km</p>
+                <p>${new Date(earthquakeData[i].properties.time)}</p>`)
             );
         }
 
-    // Define a function that we want to run once for each feature in the features array.
-    // Give each feature a popup that describes the place and time of the earthquake.
-    function onEachFeature(feature, layer) {
-      layer.bindPopup(`<h3>${feature.properties.place}</h3><hr><p>${new Date(feature.properties.time)}</p>`);
-    }
+    
   
     // Create a GeoJSON layer that contains the features array on the earthquakeData object.
     // Run the onEachFeature function once for each piece of data in the array.
