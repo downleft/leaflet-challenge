@@ -28,14 +28,38 @@ d3.json(url).then(function (data) {
         let longitude = earthquakeData[i].geometry.coordinates[0]
         let depth = earthquakeData[i].geometry.coordinates[2]
         let coordinates = [latitude, longitude]
+
         // Setting the marker radius for the state by magnitude
+        let radius = earthquakeData[i].properties.mag * 50000
+
+        // Conditionals for country gdp_pc
+        let color = "";
+            if (depth < 10) {
+                color = "#52BE80";
+            }
+            else if (depth < 30) {
+                color = "#82E0AA";
+            }
+            else if (depth < 50) {
+                color = "#F9E79F";
+            }
+            else if (depth < 70) {
+                color = "#F5B041";
+            }
+            else if (depth < 90) {
+                color = "#E67E22";
+            }
+            else {
+                color = "#CD6155";
+            }
+
         earthquakeMarkers.push(
             L.circle(coordinates, {
                 stroke: false,
                 fillOpacity: 0.75,
-                color: "green",
-                fillColor: "green",
-                radius: earthquakeData[i].properties.mag * 50000,
+                color: "white",
+                fillColor: color,
+                radius: radius,
             }).bindPopup(`<h3>${earthquakeData[i].properties.place}</h3>
                 <hr><p>Magnitude: ${(earthquakeData[i].properties.mag)}</p>
                 <p>Depth: ${(depth)} km</p>
