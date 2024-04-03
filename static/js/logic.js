@@ -30,9 +30,9 @@ d3.json(url).then(function (data) {
         let coordinates = [latitude, longitude]
 
         // Setting the marker radius for the state by magnitude
-        let radius = earthquakeData[i].properties.mag * 50000
+        let radius = earthquakeData[i].properties.mag * 15000
 
-        // Conditionals for country gdp_pc
+        // Conditionals for color by depth
         let color = "";
             if (depth < 10) {
                 color = "#52BE80";
@@ -53,6 +53,7 @@ d3.json(url).then(function (data) {
                 color = "#CD6155";
             }
 
+        // Create markers
         earthquakeMarkers.push(
             L.circle(coordinates, {
                 stroke: false,
@@ -121,5 +122,26 @@ function createMap(earthquakeMarkers) {
   L.control.layers(baseMaps, 
     overlayMaps, 
     {collapsed: false}).addTo(myMap);
+
+// Code for legend from https://codepen.io/haakseth/pen/KQbjdO
+/*Legend specific*/
+var legend = L.control({ position: "bottomleft" });
+
+legend.onAdd = function() {
+  var div = L.DomUtil.create("div", "legend");
+  div.innerHTML += "<h4>Earthquake Depth (km)</h4>";
+  div.innerHTML += '<i style="background: #52BE80"></i><span> -10 - 10</span><br>';
+  div.innerHTML += '<i style="background: #82E0AA"></i><span> 10 - 30</span><br>';
+  div.innerHTML += '<i style="background: #F9E79F"></i><span> 30 - 50</span><br>';
+  div.innerHTML += '<i style="background: #F5B041"></i><span> 50 - 70</span><br>';
+  div.innerHTML += '<i style="background: #E67E22"></i><span> 70 - 90</span><br>';
+  div.innerHTML += '<i style="background: #CD6155"></i><span> 90+</span><br>';
+  
+  
+
+  return div;
+};
+
+legend.addTo(myMap);
 };
 
